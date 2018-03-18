@@ -6,12 +6,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def pop_calc(data_path):
-    for i in range(18):
+def pop_calc(init_fname, data_path):
         ls = []
         for root, dirs, files in os.walk(data_path):
             for dir in dirs:
-                with codecs.open(os.path.join(root, dir, str(i)+'_hotword.json'), 'r+', 'utf-8') as input:
+                if len(dir) > 2:
+                    continue
+                with codecs.open(os.path.join(root, dir, init_fname.replace('.json','.wordtr')), 'r+', 'utf-8') as input:
                     for line in input:
                         source = json.loads(line)
                         tot_pop = 0.0
@@ -30,10 +31,11 @@ def pop_calc(data_path):
                             'event_pop5': tot_pop * tot_fre / (word_cnt * 0.5),
                             'event_pop8': tot_pop * tot_fre / (word_cnt * 0.8),
                         })
-        if not os.path.exists(os.path.join(os.getcwd(), 'popularity')):
-            os.mkdir(os.path.join(os.getcwd(), 'popularity'))
-        with codecs.open(os.path.join(os.getcwd(), 'popularity', str(i) + '.json'), 'w+', 'utf-8') as output:
+        # if not os.path.exists(os.path.join(os.getcwd(), 'popularity')):
+        #     os.mkdir(os.path.join(os.getcwd(), 'popularity'))
+        with codecs.open(os.path.join(data_path, init_fname.replace('.json','.pop')), 'w+', 'utf-8') as output:
             output.write(json.dumps(ls))
+        print('Calculating Popularity Success!')
 
 # pop_calc('data/fixed')
 
@@ -64,4 +66,4 @@ def show():
                 plt.show()
         exit()
 
-show()
+# show()

@@ -4,11 +4,11 @@ import os
 import codecs
 from timeit import default_timer as timer
 
-def collect_words(topic='0', path='data/fixed'):
+def collect_words(filename, path):
     words = []
     for root, dirs, files in os.walk(path):
         for file in files:
-            if file == topic + '.json':
+            if file == filename:
                 words.extend(get_words_file(os.path.join(root, file)))
                 print(str(len(words)))
     return words
@@ -16,13 +16,16 @@ def collect_words(topic='0', path='data/fixed'):
 def get_words_file(path):
     print('Collecting words from ' + path + '...')
     words = []
-    with codecs.open(path, 'r+', 'utf-8') as f:
-        for line in f:
-            if line == '':
-                continue
-            ls = json.loads(line)
-            for i in range(len(ls)):
-                words.append(ls[i]['text'])
+    ls = json.load(codecs.open(path, 'r+', 'utf-8'))
+    for i in range(len(ls)):
+        words.append(ls[i]['text'])
+    # with codecs.open(path, 'r+', 'utf-8') as f:
+    #     for line in f:
+    #         if line == '':
+    #             continue
+    #         ls = json.loads(line)
+    #         for i in range(len(ls)):
+    #             words.append(ls[i]['text'])
     return words
 
 def word2vec(words, save_path):

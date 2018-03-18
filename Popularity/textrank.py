@@ -43,15 +43,17 @@ def text_rank(model_path, wiki_path, json_path, save_path):
 
     dict_hour = sorted(dict_hour.items(), key=lambda d:d[1], reverse=True)
 
-    with codecs.open(json_path.replace('.json', '_fre.json'), 'w+', 'utf-8') as fre_files:
+    with codecs.open(json_path.replace('.json', '.fre'), 'w+', 'utf-8') as fre_files:
         res = []
         for i in range(len(dict_hour)):
-            res.append({'keyword': dict_hour[i][0], 'fre': str(dict_hour[i][1])})
+            res.append({'word': dict_hour[i][0], 'fre': str(dict_hour[i][1])})
         fre_files.write(json.dumps(res))
+
+    return
+
 
     dict_hour = [item for item in dict_hour if item[1] > 100]
     print('# of thresholded ' + str(len(dict_hour)))
-
 
     # add edges
     scale = len(dict_hour)
@@ -81,17 +83,17 @@ def text_rank(model_path, wiki_path, json_path, save_path):
         fre_files.write(json.dumps(res))
     print(result)
 
-def textrank_dir(data_path=''):
-    for root, dirs, files in os.walk(data_path):
-        for dir in dirs:
-            if dir != '2018-01-26_20-00' and dir != '2018-01-26_21-00' and dir != '2018-01-26_22-00':
-                continue
-            for i in range(18):
-                try:
-                    print('Processing '+ os.path.join(root, dir, str(i)+'.json'))
-                    text_rank('w2vmodel/' + str(i) + '.w2v', 'w2vmodel/wiki/wiki.w2v', os.path.join(root, dir, str(i)+'.json'), os.path.join(root, dir, str(i)+'_hotword.json'))
-                except:
-                    print('error')
+# def textrank_dir(data_path=''):
+#     for root, dirs, files in os.walk(data_path):
+#         for dir in dirs:
+#             if dir != '2018-01-26_20-00' and dir != '2018-01-26_21-00' and dir != '2018-01-26_22-00':
+#                 continue
+#             for i in range(18):
+#                 try:
+#                     print('Processing '+ os.path.join(root, dir, str(i)+'.json'))
+#                     text_rank('w2vmodel/' + str(i) + '.w2v', 'w2vmodel/wiki/wiki.w2v', os.path.join(root, dir, str(i)+'.json'), os.path.join(root, dir, str(i)+'_hotword.json'))
+#                 except:
+#                     print('error')
 
 # textrank_dir('data/fixed')
 
